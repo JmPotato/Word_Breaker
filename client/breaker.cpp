@@ -10,8 +10,10 @@ int Breaker::insertBreaker() {
     QByteArray data;
     QDataStream w(&data, QIODevice::WriteOnly);
     user_info breaker;
-    char buf[50];
+    char buf[100];
     breaker.signal_type = 1;
+    breaker.client_port = client.client_port;
+    strcpy(breaker.client_address, client.client_address.toString().toStdString().c_str());
     strcpy(breaker.username, username.toStdString().c_str());
     strcpy(breaker.password, password.toStdString().c_str());
     memcpy(buf, &breaker, sizeof(breaker));
@@ -31,8 +33,11 @@ int Breaker::checkBreaker() {
     QByteArray data;
     QDataStream w(&data, QIODevice::WriteOnly);
     user_info breaker;
-    char buf[50];
+    char buf[100];
     breaker.signal_type = 2;
+    breaker.client_port = client.client_port;
+    strcpy(breaker.client_address, client.client_address.toString().toStdString().c_str());
+    strcpy(breaker.client_address, client.client_address.toString().toStdString().c_str());
     strcpy(breaker.username, username.toStdString().c_str());
     strcpy(breaker.password, password.toStdString().c_str());
     memcpy(buf, &breaker, sizeof(breaker));
