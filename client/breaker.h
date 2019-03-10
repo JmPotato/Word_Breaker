@@ -14,7 +14,9 @@ using namespace std;
 
 #pragma pack(1)
 typedef struct {
+    unsigned short client_port;
     short signal_type;
+    char client_address[15];
     char username[10];
     char password[15];
 } user_info;

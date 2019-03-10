@@ -1,8 +1,14 @@
 #include "client.h"
 
 Client::Client(QObject *parent): QObject(parent) {
+    QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
+    client_address = info.addresses().first();
+    default_random_engine e(time(NULL));
+    uniform_int_distribution<unsigned short> u(49152, 65535);
+    client_port = u(e);
+    cout << client_port << endl;
     socket = new QUdpSocket(this);
-    socket->bind(QHostAddress::LocalHost, 4321);
+    socket->bind(client_address, client_port);
     connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
@@ -18,7 +24,7 @@ int Client::send(QByteArray data) {
 void Client::processPendingDatagram() {
     while(socket->hasPendingDatagrams()) {
         QByteArray datagram;
-        char buf[50];
+        char buf[100];
         short res_type = 0;
         datagram.resize(int(socket->pendingDatagramSize()));
         socket->readDatagram(datagram.data(), datagram.size());

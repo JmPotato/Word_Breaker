@@ -2,11 +2,15 @@
 #define CLIENT_H
 
 #include <string>
+#include <random>
+#include <ctime>
 #include <iostream>
 
 #include <QByteArray>
 #include <QUdpSocket>
 #include <QDataStream>
+#include <QHostInfo>
+#include <QHostAddress>
 
 using namespace std;
 
@@ -14,7 +18,8 @@ class Client: public QObject {
     Q_OBJECT
     QUdpSocket *socket;
 public:
-    QByteArray rec_data;
+    QHostAddress client_address;
+    unsigned short client_port;
     explicit Client(QObject *parent = nullptr);
     int send(const QByteArray data);
 signals:
