@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += sql
+QT       += network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Word_Breaker
@@ -27,13 +28,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    database.cpp \
+    client.cpp \
     breaker.cpp
 
 HEADERS += \
         mainwindow.h \
-    breaker.h \
-    database.h
+    client.h \
+    breaker.h
 
 FORMS += \
         mainwindow.ui

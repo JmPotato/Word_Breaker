@@ -1,25 +1,40 @@
 #ifndef BREAKER_H
 #define BREAKER_H
 
-#include "database.h"
+#include "client.h"
+
+#include <iostream>
 
 #include <QString>
+#include <QByteArray>
+#include <QDataStream>
+#include <QElapsedTimer>
 
 using namespace std;
 
-class Breaker {
+#pragma pack(1)
+typedef struct {
+    short signal_type;
+    char username[10];
+    char password[15];
+} user_info;
+#pragma pack()
+
+class Breaker: public QObject {
+    Q_OBJECT
 private:
-    Database database;
-    int breaker_id;
-    QString username;
-    QString passsword;
+    Client client;
 public:
-    Breaker(QString name, QString pw);
-    ~Breaker();
+    short status;
+    QString username;
+    QString password;
+    explicit Breaker(QObject *parent = nullptr);
     int checkBreaker();
     int insertBreaker();
-    void getBreakerByID(int id);
-    void getBreakerByName(QString name);
+signals:
+    void dataSent();
+public slots:
+    void changeStatus(short value);
 };
 
 #endif // BREAKER_H

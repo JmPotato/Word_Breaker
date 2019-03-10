@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "database.h"
-
 #include <QString>
+#include <QLineEdit>
 #include <QMainWindow>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +21,8 @@ public:
 private slots:
     void on_signupButton_clicked();
     void on_signinButton_clicked();
+    void on_gosigninButton_clicked();
+    void on_gosignupButton_clicked();
 
 private:
     Ui::MainWindow *ui;
