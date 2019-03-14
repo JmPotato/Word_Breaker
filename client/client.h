@@ -18,8 +18,8 @@ class Client: public QObject {
     Q_OBJECT
     QUdpSocket *socket;
 public:
-    QHostAddress client_address;
-    unsigned short client_port;
+    QHostAddress clientAddress;
+    unsigned short clientPort;
     explicit Client(QObject *parent = nullptr);
     int send(const QByteArray data);
 signals:

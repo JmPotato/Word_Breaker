@@ -19,7 +19,7 @@ public:
     ~Database();
     void connect();
     void close();
-    QSqlQuery execute(QString sql_command);
+    QSqlQuery execute(QString sqlCommand);
     void initDatabase();
 };
 

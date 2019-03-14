@@ -11,9 +11,8 @@
 
 #pragma pack(1)
 typedef struct {
-    unsigned short client_port;
-    short signal_type;
-    char client_address[15];
+    short signalType;
+    short userType;
     char username[10];
     char password[15];
 } user_info;
@@ -24,12 +23,12 @@ class User: public Server {
 public:
     explicit User(QObject *parent = nullptr);
 signals:
-    void signup_signal(QHostAddress remote, unsigned short port, string username, string passwrod);
-    void signin_signal(QHostAddress remote, unsigned short port, string username, string passwrod);
+    void signupSignal(QHostAddress remote, unsigned short port, short type, string username, string passwrod);
+    void signinSignal(QHostAddress remote, unsigned short port, short type, string username, string passwrod);
 private slots:
     void processPendingDatagram();
-    void creatUser(QHostAddress remote, unsigned short port, string username, string passwrod);
-    void validateUser(QHostAddress remote, unsigned short port, string username, string passwrod);
+    void creatUser(QHostAddress remote, unsigned short port, short type, string username, string passwrod);
+    void validateUser(QHostAddress remote, unsigned short port, short type, string username, string passwrod);
 };
 
 #endif // USER_H

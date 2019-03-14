@@ -23,10 +23,10 @@ void Database::close() {
     database.close();
 }
 
-QSqlQuery Database::execute(QString sql_command) {
+QSqlQuery Database::execute(QString sqlCommand) {
     QSqlQuery sql_query;
-    if(!sql_query.exec(sql_command)) {
-        cout << QString("Error: Failed to execute: %1").arg(sql_command).toStdString() << endl;
+    if(!sql_query.exec(sqlCommand)) {
+        cout << QString("Error: Failed to execute: %1").arg(sqlCommand).toStdString() << endl;
         cout << sql_query.lastError().text().toStdString() << endl;
         throw sql_query.lastError();
     }

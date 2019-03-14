@@ -2,13 +2,13 @@
 
 Client::Client(QObject *parent): QObject(parent) {
     QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
-    client_address = info.addresses().first();
+    clientAddress = info.addresses().first();
     default_random_engine e(time(NULL));
     uniform_int_distribution<unsigned short> u(49152, 65535);
-    client_port = u(e);
-    cout << client_port << endl;
+    clientPort = u(e);
+    cout << clientPort << endl;
     socket = new QUdpSocket(this);
-    socket->bind(client_address, client_port);
+    socket->bind(clientAddress, clientPort);
     connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
