@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "client.h"
-#include "breaker.h"
 
 using namespace std;
 
@@ -10,11 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(1);
+    ui->signinBreakerButton->toggle();
+    ui->signupBreakerButton->toggle();
+    ui->signupPassword->setEchoMode(QLineEdit::Password);
+    ui->signupRepassword->setEchoMode(QLineEdit::Password);
+    ui->signinPassword->setEchoMode(QLineEdit::Password);
     ui->message->setAlignment(Qt::AlignCenter);
-    ui->signup_password->setEchoMode(QLineEdit::Password);
-    ui->signup_repassword->setEchoMode(QLineEdit::Password);
-    ui->signin_password->setEchoMode(QLineEdit::Password);
-    Client sender;
 }
 
 MainWindow::~MainWindow() {
@@ -22,32 +21,56 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_signupButton_clicked() {
-    QString username = ui->signup_username->text();
-    QString password = ui->signup_password->text();
-    QString repassword = ui->signup_repassword->text();
+    QString username = ui->signupUsername->text();
+    QString password = ui->signupPassword->text();
+    QString repassword = ui->signupRepassword->text();
+    if(ui->signupBreakerButton->isChecked())
+        user.userType = 1;
+    else
+        user.userType = 0;
     if(username != "" && (password == repassword)) {
-        Breaker new_breaker;
-        new_breaker.username = username;
-        new_breaker.password = password;
-        if(new_breaker.insertBreaker())
-            ui->stackedWidget->setCurrentIndex(1);
-        new_breaker.status = 0;
-    } else if(username == "")
+        user.username = username;
+        user.password = password;
+        if(user.insertUser()) {
+            ui->stackedWidget->setCurrentIndex(2);
+            ui->message->setText(QString("Hello, %1!    Status: %2    Type: %3").arg(user.username).arg(user.status).arg(user.userType));
+        } else {
+            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("注册失败：用户名已存在"));
+            user.signoutUser();
+        }
+    } else if(username == "") {
         QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名不能为空"));
-    else if(password != repassword)
+        user.signoutUser();
+    } else if(password != repassword) {
         QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("两次密码输入不一致"));
+        user.signoutUser();
+    }
 }
 
 void MainWindow::on_signinButton_clicked() {
-    QString username = ui->signin_username->text();
-    QString password = ui->signin_password->text();
-    Breaker signin_breaker;
-    signin_breaker.username = username;
-    signin_breaker.password = password;
-    switch(signin_breaker.checkBreaker()) {
-        case 1: ui->stackedWidget->setCurrentIndex(2);ui->message->setText(username + ", tql!");break;
-        case 0: QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名或密码错误"));break;
-        case -1: QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名不存在"));break;
+    QString username = ui->signinUsername->text();
+    QString password = ui->signinPassword->text();
+    if(ui->signinBreakerButton->isChecked())
+        user.userType = 1;
+    else
+        user.userType = 0;
+    user.username = username;
+    user.password = password;
+    switch(user.checkUser()) {
+        case 1:
+            ui->stackedWidget->setCurrentIndex(2);
+            ui->message->setText(QString("Hello, %1!    \
+                                          Status: %2    \
+                                          Type: %3").arg(user.username).arg(user.status).arg(user.userType));
+            break;
+        case 0:
+            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名或密码错误"));
+            user.signoutUser();
+            break;
+        case -1:
+            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名不存在"));
+            user.signoutUser();
+            break;
     }
 }
 
@@ -57,4 +80,19 @@ void MainWindow::on_gosigninButton_clicked() {
 
 void MainWindow::on_gosignupButton_clicked() {
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_signoutButton_clicked() {
+    user.signoutUser();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_findButton_clicked() {
+    finder = new FinderWindow(this);
+    finder->show();
+}
+
+void MainWindow::on_rankButton_clicked() {
+    rank = new RankWindow(this);
+    rank->show();
 }
