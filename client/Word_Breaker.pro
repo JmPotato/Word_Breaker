@@ -29,15 +29,21 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     client.cpp \
-    breaker.cpp
+    user.cpp \
+    rankwindow.cpp \
+    finderwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     client.h \
-    breaker.h
+    user.h \
+    rankwindow.h \
+    finderwindow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    rankwindow.ui \
+    finderwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
