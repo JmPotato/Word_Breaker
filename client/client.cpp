@@ -12,35 +12,26 @@ Client::Client(QObject *parent): QObject(parent) {
     connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
-int Client::send(QByteArray data) {
+void Client::packPacket(QByteArray &data, Packet packet) {
+    char buf[BUFFER];
+    QDataStream w(&data, QIODevice::WriteOnly);
+    memcpy(buf, &packet, sizeof(packet));
+    w.writeRawData(buf, sizeof(packet));
+}
+
+void Client::unpackPacket(QByteArray data, Packet &packet) {
+    char buf[BUFFER];
+    QDataStream r(&data, QIODevice::ReadOnly);
+    r.readRawData(buf, sizeof(packet));
+    memcpy(&packet, buf, sizeof(packet));
+}
+
+short Client::send(const QByteArray data) {
     try {
         socket->writeDatagram(data.data(), data.size(), QHostAddress::LocalHost, 1234);
         return 1;
     } catch (...) {
         return 0;
-    }
-}
-
-void Client::processPendingDatagram() {
-    while(socket->hasPendingDatagrams()) {
-        QByteArray datagram;
-        char buf[100];
-        short res_type = 0;
-        datagram.resize(int(socket->pendingDatagramSize()));
-        socket->readDatagram(datagram.data(), datagram.size());
-        QDataStream a(&datagram, QIODevice::ReadOnly);
-        a.readRawData(buf, sizeof(short));
-        memcpy(&res_type, buf, sizeof(short));
-        switch(res_type) {
-            case 1:
-                cout << "RES: SUCCESSED" << endl;
-                emit successSignal();
-                break;
-            default:
-                cout << "RES: FAILED" << endl;
-                emit failSignal();
-                break;
-        }
     }
 }
 

@@ -5,26 +5,13 @@
 
 #include <iostream>
 
-#include <QString>
-#include <QByteArray>
-#include <QDataStream>
-#include <QElapsedTimer>
+#include <QHostAddress>
 
 using namespace std;
 
-#pragma pack(1)
-typedef struct {
-    short signalType;
-    short userType;
-    char username[10];
-    char password[15];
-} user_info;
-#pragma pack()
-
-class User: public QObject {
+class User: public Client {
     Q_OBJECT
 private:
-    Client client;
     short id;
 public:
     short status;
@@ -36,9 +23,11 @@ public:
     int insertUser();
     void signoutUser();
 signals:
-    void dataSent();
-public slots:
-    void changeStatus(short value);
+    void signupSignal(Packet recPacket);
+    void signinSignal(Packet recPacket);
+    void rankSignal(Packet recPacket);
+private slots:
+    void processPendingDatagram();
 };
 
 #endif // USER_H

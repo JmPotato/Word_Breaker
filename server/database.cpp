@@ -24,24 +24,24 @@ void Database::close() {
 }
 
 QSqlQuery Database::execute(QString sqlCommand) {
-    QSqlQuery sql_query;
-    if(!sql_query.exec(sqlCommand)) {
+    QSqlQuery sqlQuery;
+    if(!sqlQuery.exec(sqlCommand)) {
         cout << QString("Error: Failed to execute: %1").arg(sqlCommand).toStdString() << endl;
-        cout << sql_query.lastError().text().toStdString() << endl;
-        throw sql_query.lastError();
+        cout << sqlQuery.lastError().text().toStdString() << endl;
+        throw sqlQuery.lastError();
     }
-    return sql_query;
+    return sqlQuery;
 }
 
-void Database::initDatabase() {
-    QString create_breaker = "CREATE TABLE breaker ("\
-        "breaker_id integer NOT NULL PRIMARY KEY autoincrement,"\
-        "username text NOT NULL,"\
-        "password text NOT NULL);";
-    this->execute(create_breaker);
-    QString creat_maker = "CREATE TABLE maker ("\
-        "breaker_id integer NOT NULL PRIMARY KEY autoincrement,"\
-        "username text NOT NULL,"\
-        "password text NOT NULL);";
-    this->execute(creat_maker);
-}
+//void Database::initDatabase() {
+//    QString create_breaker = "CREATE TABLE breaker ("\
+//        "breaker_id integer NOT NULL PRIMARY KEY autoincrement,"\
+//        "username text NOT NULL,"\
+//        "password text NOT NULL);";
+//    this->execute(create_breaker);
+//    QString creat_maker = "CREATE TABLE maker ("\
+//        "breaker_id integer NOT NULL PRIMARY KEY autoincrement,"\
+//        "username text NOT NULL,"\
+//        "password text NOT NULL);";
+//    this->execute(creat_maker);
+//}

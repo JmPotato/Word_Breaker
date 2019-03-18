@@ -3,6 +3,7 @@
 User::User(QObject *parent): Server(parent) {
     connect(this, &User::signupSignal, this, &User::creatUser);
     connect(this, &User::signinSignal, this, &User::validateUser);
+    connect(this, &User::rankSignal, this, &User::getRank);
 }
 
 void User::processPendingDatagram() {
@@ -10,22 +11,23 @@ void User::processPendingDatagram() {
         QHostAddress client_address;
         unsigned short client_port;
         QByteArray datagram;
-        user_info user;
-        char buf[100];
+        Packet recPacket;
         datagram.resize(int(socket->pendingDatagramSize()));
         socket->readDatagram(datagram.data(), datagram.size(), &client_address, &client_port);
-        QDataStream a(&datagram, QIODevice::ReadOnly);
-        a.readRawData(buf, sizeof(user));
-        memcpy(&user, buf, sizeof(user));
+        unpackPacket(datagram, recPacket);
         cout << client_address.toString().toStdString() << ":" << client_port << endl;
-        switch(user.signalType) {
+        switch(recPacket.signalType) {
             case 1:
                 cout << "CREAT USER REQUEST" << endl;
-                emit signupSignal(client_address, client_port, user.userType, user.username, user.password);
+                emit signupSignal(client_address, client_port, recPacket);
                 break;
             case 2:
                 cout << "CHECK USER REQUEST" << endl;
-                emit signinSignal(client_address, client_port, user.userType, user.username, user.password);
+                emit signinSignal(client_address, client_port, recPacket);
+                break;
+            case 3:
+                cout << "GET RANK REQUEST" << endl;
+                emit rankSignal(client_address, client_port);
                 break;
             default:
                 cout << "NONE REQUEST" << endl;
@@ -34,45 +36,66 @@ void User::processPendingDatagram() {
     }
 }
 
-void User::creatUser(QHostAddress remote, unsigned short port, short type, string username, string password) {
+void User::creatUser(QHostAddress remote, unsigned short port, Packet recPacket) {
     QString userType;
-    if(type == 0)
-        userType = "maker";
-    else if(type == 1)
-        userType = "breaker";
-    QString sql = QString("SELECT username FROM %1 WHERE username=\"%2\";").arg(userType).arg(QString::fromStdString(username));
+    QString user_type;
+    if(recPacket.userType == 0)
+        user_type = "maker";
+    else if(recPacket.userType == 1)
+        user_type = "breaker";
+    QString sql = QString("SELECT username FROM %1 WHERE username=\"%2\";").arg(user_type).arg(QString::fromStdString(recPacket.username));
     QSqlQuery sql_query = database.execute(sql);
     QByteArray datagram;
-    datagram.resize(2);
-    datagram[0] = 0x00;
-    datagram[1] = 0x00;
+    Packet traPacket;
+    datagram.resize(sizeof(traPacket));
+    traPacket.signalType = -1;
     if(!sql_query.first()) {
-        sql = QString("INSERT INTO %1 (username, password, mark, xp, level) VALUES (\"%2\", \"%3\", 0, 0, 0);").arg(userType).arg(QString::fromStdString(username), QString::fromStdString(password));
+        sql = QString("INSERT INTO %1 (username, password, mark, xp, level) VALUES (\"%2\", \"%3\", 0, 0, 0);").arg(user_type).arg(QString::fromStdString(recPacket.username), QString::fromStdString(recPacket.password));
         try {
             QSqlQuery sql_query = database.execute(sql);
-            datagram[0] = 0x01;
+            traPacket.signalType = 1;
         } catch(...) {
-            datagram[0] = 0x00;
+            traPacket.signalType = -1;
         }
     }
-    socket->writeDatagram(datagram.data(), datagram.size(), remote, port);
+    traPacket.userType = recPacket.userType;
+    strcpy(traPacket.password, "");
+    strcpy(traPacket.username, "");
+    packPacket(datagram, traPacket);
+    send(datagram, remote, port);
 }
 
-void User::validateUser(QHostAddress remote, unsigned short port, short type, string username, string passwrod) {
+void User::validateUser(QHostAddress remote, unsigned short port, Packet recPacket) {
     QString user_type;
-    if(type == 0)
+    if(recPacket.userType == 0)
         user_type = "maker";
-    else if(type == 1)
+    else if(recPacket.userType == 1)
         user_type = "breaker";
-    QString sql = QString("SELECT password FROM %1 WHERE username=\"%2\";").arg(user_type).arg(QString::fromStdString(username));
+    QString sql = QString("SELECT password FROM %1 WHERE username=\"%2\";").arg(user_type).arg(QString::fromStdString(recPacket.username));
     QSqlQuery sql_query = database.execute(sql);
     QByteArray datagram;
-    datagram.resize(2);
-    datagram[0] = 0x00;
-    datagram[1] = 0x00;
+    Packet traPacket;
+    traPacket.signalType = -2;
     if(sql_query.first()) {
-        if(!QString::compare(sql_query.value(0).toString(), QString::fromStdString(passwrod)))
-            datagram[0] = 0x01;
+        if(!QString::compare(sql_query.value(0).toString(), QString::fromStdString(recPacket.password)))
+            traPacket.signalType = 2;
     }
-    socket->writeDatagram(datagram.data(), datagram.size(), remote, port);
+    traPacket.userType = recPacket.userType;
+    strcpy(traPacket.password, "");
+    strcpy(traPacket.username, "");
+    packPacket(datagram, traPacket);
+    send(datagram, remote, port);
+}
+
+void User::getRank(QHostAddress remote, unsigned short port) {
+    QByteArray datagram;
+    Packet traPacket;
+    QSqlQueryModel *tableViewModel = new QSqlQueryModel;
+    tableViewModel->setQuery("SELECT (username, mark, xp, level) FROM breaker ORDER BY level");
+    traPacket.signalType = 3;
+    traPacket.userType = -1;
+    strcpy(traPacket.password, "");
+    strcpy(traPacket.username, "");
+    packPacket(datagram, traPacket);
+    send(datagram, remote, port);
 }

@@ -5,7 +5,6 @@
 #include "rankwindow.h"
 #include "finderwindow.h"
 
-#include <QString>
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -20,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
+    void signup(Packet recPacket);
+    void signin(Packet recPacket);
     void on_signupButton_clicked();
     void on_signinButton_clicked();
     void on_gosigninButton_clicked();
@@ -27,11 +28,9 @@ private slots:
     void on_signoutButton_clicked();
     void on_findButton_clicked();
     void on_rankButton_clicked();
-
 private:
     Ui::MainWindow *ui;
     RankWindow *rank;
-    FinderWindow *finder;
     User user;
 };
 

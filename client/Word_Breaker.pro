@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += sql
 QT       += network
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Word_Breaker
@@ -30,20 +31,17 @@ SOURCES += \
         mainwindow.cpp \
     client.cpp \
     user.cpp \
-    rankwindow.cpp \
-    finderwindow.cpp
+    rankwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     client.h \
     user.h \
-    rankwindow.h \
-    finderwindow.h
+    rankwindow.h
 
 FORMS += \
         mainwindow.ui \
-    rankwindow.ui \
-    finderwindow.ui
+    rankwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -14,10 +14,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->signupRepassword->setEchoMode(QLineEdit::Password);
     ui->signinPassword->setEchoMode(QLineEdit::Password);
     ui->message->setAlignment(Qt::AlignCenter);
+
+    connect(&user, &User::signupSignal, this, &MainWindow::signup);
+    connect(&user, &User::signinSignal, this, &MainWindow::signin);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::signup(Packet recPacket) {
+    if(recPacket.signalType == 1)
+        ui->stackedWidget->setCurrentIndex(2);
+    else if(recPacket.signalType == -1) {
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("注册失败：该用户名已存在"));
+        user.signoutUser();
+    }
+}
+
+void MainWindow::signin(Packet recPacket) {
+    if(recPacket.signalType == 2)
+        ui->stackedWidget->setCurrentIndex(2);
+    else if(recPacket.signalType == -2) {
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("登陆失败：用户名与密码不匹配"));
+        user.signoutUser();
+    }
 }
 
 void MainWindow::on_signupButton_clicked() {
@@ -31,11 +52,8 @@ void MainWindow::on_signupButton_clicked() {
     if(username != "" && (password == repassword)) {
         user.username = username;
         user.password = password;
-        if(user.insertUser()) {
-            ui->stackedWidget->setCurrentIndex(2);
-            ui->message->setText(QString("Hello, %1!    Status: %2    Type: %3").arg(user.username).arg(user.status).arg(user.userType));
-        } else {
-            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("注册失败：用户名已存在"));
+        if(!user.insertUser()) {
+            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("注册失败：无法连接到服务器"));
             user.signoutUser();
         }
     } else if(username == "") {
@@ -56,21 +74,9 @@ void MainWindow::on_signinButton_clicked() {
         user.userType = 0;
     user.username = username;
     user.password = password;
-    switch(user.checkUser()) {
-        case 1:
-            ui->stackedWidget->setCurrentIndex(2);
-            ui->message->setText(QString("Hello, %1!    \
-                                          Status: %2    \
-                                          Type: %3").arg(user.username).arg(user.status).arg(user.userType));
-            break;
-        case 0:
-            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名或密码错误"));
-            user.signoutUser();
-            break;
-        case -1:
-            QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名不存在"));
-            user.signoutUser();
-            break;
+    if(!user.checkUser()) {
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("登陆失败：无法连接到服务器"));
+        user.signoutUser();
     }
 }
 
@@ -88,8 +94,6 @@ void MainWindow::on_signoutButton_clicked() {
 }
 
 void MainWindow::on_findButton_clicked() {
-    finder = new FinderWindow(this);
-    finder->show();
 }
 
 void MainWindow::on_rankButton_clicked() {

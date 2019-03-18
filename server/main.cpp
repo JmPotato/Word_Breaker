@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    User user_server;
+    User userServer;
 
     return a.exec();
 }
