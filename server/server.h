@@ -17,6 +17,9 @@ using namespace std;
 typedef struct {
     short signalType;
     short userType;
+    unsigned short mark;
+    unsigned short xp;
+    unsigned short level;
     char username[10];
     char password[15];
 } Packet;

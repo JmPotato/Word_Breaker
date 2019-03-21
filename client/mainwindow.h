@@ -3,7 +3,6 @@
 
 #include "user.h"
 #include "rankwindow.h"
-#include "finderwindow.h"
 
 #include <QLineEdit>
 #include <QMainWindow>
@@ -21,6 +20,7 @@ public:
 private slots:
     void signup(Packet recPacket);
     void signin(Packet recPacket);
+    void getInfo(Packet recPacket);
     void on_signupButton_clicked();
     void on_signinButton_clicked();
     void on_gosigninButton_clicked();

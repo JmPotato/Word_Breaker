@@ -19,13 +19,14 @@ public:
     QString username;
     QString password;
     explicit User(QObject *parent = nullptr);
-    int checkUser();
-    int insertUser();
+    void checkUser();
+    void insertUser();
+    void signinUser();
     void signoutUser();
 signals:
     void signupSignal(Packet recPacket);
     void signinSignal(Packet recPacket);
-    void rankSignal(Packet recPacket);
+    void getInfoSignal(Packet recPacket);
 private slots:
     void processPendingDatagram();
 };

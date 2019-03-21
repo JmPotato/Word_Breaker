@@ -15,6 +15,7 @@ void User::processPendingDatagram() {
         datagram.resize(int(socket->pendingDatagramSize()));
         socket->readDatagram(datagram.data(), datagram.size());
         unpackPacket(datagram, recPacket);
+        cout << recPacket.signalType << endl;
         switch(recPacket.signalType) {
             case 1:
             case -1:
@@ -28,8 +29,8 @@ void User::processPendingDatagram() {
                 break;
             case 3:
             case -3:
-                cout << "GET RANK RESPONSE" << endl;
-                emit rankSignal(recPacket);
+                cout << "GET USER RESPONSE" << endl;
+                emit getInfoSignal(recPacket);
                 break;
             default:
                 cout << "FAILED RESPONSE" << endl;
@@ -38,7 +39,7 @@ void User::processPendingDatagram() {
     }
 }
 
-int User::insertUser() {
+void User::insertUser() {
     QByteArray data;
     Packet user;
     user.signalType = 1;
@@ -46,13 +47,10 @@ int User::insertUser() {
     strcpy(user.username, username.toStdString().c_str());
     strcpy(user.password, password.toStdString().c_str());
     packPacket(data, user);
-    if(send(data)) {
-        return 1;
-    }
-    return -1;
+    send(data);
 }
 
-int User::checkUser() {
+void User::checkUser() {
     QByteArray data;
     Packet user;
     user.signalType = 2;
@@ -60,10 +58,18 @@ int User::checkUser() {
     strcpy(user.username, username.toStdString().c_str());
     strcpy(user.password, password.toStdString().c_str());
     packPacket(data, user);
-    if(send(data)) {
-        return 1;
-    }
-    return -1;
+    send(data);
+}
+
+void User::signinUser() {
+    QByteArray data;
+    Packet user;
+    user.signalType = 3;
+    user.userType = userType;
+    strcpy(user.username, username.toStdString().c_str());
+    strcpy(user.password, password.toStdString().c_str());
+    packPacket(data, user);
+    send(data);
 }
 
 void User::signoutUser() {

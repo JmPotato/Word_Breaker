@@ -15,12 +15,12 @@ public:
 signals:
     void signupSignal(QHostAddress remote, unsigned short port, Packet recPacket);
     void signinSignal(QHostAddress remote, unsigned short port, Packet recPacket);
-    void rankSignal(QHostAddress remote, unsigned short port);
+    void userInfoSignal(QHostAddress remote, unsigned short port, Packet recPacket);
 private slots:
     void processPendingDatagram();
     void creatUser(QHostAddress remote, unsigned short port, Packet recPacket);
     void validateUser(QHostAddress remote, unsigned short port, Packet recPacket);
-    void getRank(QHostAddress remote, unsigned short port);
+    void getUserInfo(QHostAddress remote, unsigned short port, Packet recPacket);
 };
 
 #endif // USER_H

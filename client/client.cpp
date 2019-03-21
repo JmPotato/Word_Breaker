@@ -31,7 +31,7 @@ short Client::send(const QByteArray data) {
         socket->writeDatagram(data.data(), data.size(), QHostAddress::LocalHost, 1234);
         return 1;
     } catch (...) {
-        return 0;
+        return -1;
     }
 }
 
