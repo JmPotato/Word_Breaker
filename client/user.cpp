@@ -1,11 +1,22 @@
 #include "user.h"
 
 User::User(QObject *parent): Client(parent) {
-    id = -1;
+    socket = new QUdpSocket(this);
+    socket->bind(clientAddress, clientPort);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
     status = 0;
     userType = -1;
     username = "";
     password = "";
+}
+
+short User::send(const QByteArray data) {
+    try {
+        socket->writeDatagram(data.data(), data.size(), QHostAddress::LocalHost, 1234);
+        return 1;
+    } catch (...) {
+        return -1;
+    }
 }
 
 void User::processPendingDatagram() {
@@ -73,7 +84,6 @@ void User::signinUser() {
 }
 
 void User::signoutUser() {
-    id = -1;
     status = 0;
     userType = -1;
     username = "";

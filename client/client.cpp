@@ -7,9 +7,6 @@ Client::Client(QObject *parent): QObject(parent) {
     uniform_int_distribution<unsigned short> u(49152, 65535);
     clientPort = u(e);
     cout << clientPort << endl;
-    socket = new QUdpSocket(this);
-    socket->bind(clientAddress, clientPort);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
 void Client::packPacket(QByteArray &data, Packet packet) {
@@ -25,13 +22,3 @@ void Client::unpackPacket(QByteArray data, Packet &packet) {
     r.readRawData(buf, sizeof(packet));
     memcpy(&packet, buf, sizeof(packet));
 }
-
-short Client::send(const QByteArray data) {
-    try {
-        socket->writeDatagram(data.data(), data.size(), QHostAddress::LocalHost, 1234);
-        return 1;
-    } catch (...) {
-        return -1;
-    }
-}
-

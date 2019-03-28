@@ -31,13 +31,15 @@ SOURCES += \
         mainwindow.cpp \
     client.cpp \
     user.cpp \
-    rankwindow.cpp
+    rankwindow.cpp \
+    game.cpp
 
 HEADERS += \
         mainwindow.h \
     client.h \
     user.h \
-    rankwindow.h
+    rankwindow.h \
+    game.h
 
 FORMS += \
         mainwindow.ui \

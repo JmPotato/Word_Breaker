@@ -11,8 +11,6 @@ using namespace std;
 
 class User: public Client {
     Q_OBJECT
-private:
-    short id;
 public:
     short status;
     short userType;
@@ -23,6 +21,7 @@ public:
     void insertUser();
     void signinUser();
     void signoutUser();
+    short send(const QByteArray data);
 signals:
     void signupSignal(Packet recPacket);
     void signinSignal(Packet recPacket);

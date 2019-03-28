@@ -23,8 +23,10 @@ typedef struct {
     unsigned short mark;
     unsigned short xp;
     unsigned short level;
+    unsigned short length;
     char username[10];
     char password[15];
+    char word[20];
 } Packet;
 #pragma pack()
 
@@ -38,7 +40,7 @@ public:
     QHostAddress clientAddress;
     unsigned short clientPort;
     explicit Client(QObject *parent = nullptr);
-    short send(const QByteArray data);
+    virtual short send(const QByteArray data) = 0;
 private slots:
     virtual void processPendingDatagram() = 0;
 };

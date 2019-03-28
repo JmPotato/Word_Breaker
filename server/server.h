@@ -20,8 +20,10 @@ typedef struct {
     unsigned short mark;
     unsigned short xp;
     unsigned short level;
+    unsigned short length;
     char username[10];
     char password[15];
+    char word[20];
 } Packet;
 #pragma pack()
 

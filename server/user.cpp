@@ -1,6 +1,9 @@
 #include "user.h"
 
 User::User(QObject *parent): Server(parent) {
+    socket = new QUdpSocket(this);
+    socket->bind(QHostAddress::LocalHost, 1234);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
     connect(this, &User::signupSignal, this, &User::creatUser);
     connect(this, &User::signinSignal, this, &User::validateUser);
     connect(this, &User::userInfoSignal, this, &User::getUserInfo);
@@ -77,7 +80,7 @@ void User::validateUser(QHostAddress remote, unsigned short port, Packet recPack
     Packet traPacket;
     traPacket.signalType = -2;
     if(sqlQuery.first()) {
-        if(!QString::compare(sqlQuery.value(0).toString(), QString::fromStdString(recPacket.password)))
+        if(!QString::compare(sqlQuery.value("password").toString(), QString::fromStdString(recPacket.password)))
             traPacket.signalType = 2;
     }
     traPacket.userType = recPacket.userType;
@@ -99,9 +102,9 @@ void User::getUserInfo(QHostAddress remote, unsigned short port, Packet recPacke
     Packet traPacket;
     traPacket.signalType = -3;
     if(sqlQuery.first()) {
-        traPacket.mark = sqlQuery.value(0).toInt();
-        traPacket.xp = sqlQuery.value(1).toInt();
-        traPacket.level = sqlQuery.value(2).toInt();
+        traPacket.mark = sqlQuery.value("mark").toInt();
+        traPacket.xp = sqlQuery.value("xp").toInt();
+        traPacket.level = sqlQuery.value("level").toInt();
         traPacket.signalType = 3;
     }
     traPacket.userType = recPacket.userType;
