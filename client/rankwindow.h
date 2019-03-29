@@ -15,10 +15,10 @@ class RankWindow : public QDialog {
 public:
     explicit RankWindow(QWidget *parent = nullptr);
     ~RankWindow();
-private:
-    Ui::RankWindow *ui;
 public slots:
     void setRank(QByteArray data);
+private:
+    Ui::RankWindow *ui;
 };
 
 #endif // RANKWINDOW_H

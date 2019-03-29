@@ -32,14 +32,13 @@ typedef struct {
 
 class Client: public QObject {
     Q_OBJECT
-protected:
+public:
     QUdpSocket *socket;
+    unsigned short clientPort;
+    QHostAddress clientAddress;
+    explicit Client(QObject *parent = nullptr);
     void packPacket(QByteArray &data, Packet packet);
     void unpackPacket(QByteArray data, Packet &packet);
-public:
-    QHostAddress clientAddress;
-    unsigned short clientPort;
-    explicit Client(QObject *parent = nullptr);
     virtual short send(const QByteArray data) = 0;
 private slots:
     virtual void processPendingDatagram() = 0;

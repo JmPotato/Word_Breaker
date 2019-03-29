@@ -33,15 +33,10 @@ private slots:
     void on_rankButton_clicked();
     void on_startButton_clicked();
     void on_submitButton_clicked();
-
     void on_makerWordEdit_returnPressed();
-
     void on_signinPassword_returnPressed();
-
     void on_signupRepassword_returnPressed();
-
     void on_makerEndButton_clicked();
-
 private:
     Ui::MainWindow *ui;
     RankWindow *rank;

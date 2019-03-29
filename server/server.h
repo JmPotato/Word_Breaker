@@ -29,10 +29,9 @@ typedef struct {
 
 class Server: public QObject {
     Q_OBJECT
-protected:
+public:
     Database database;
     QUdpSocket *socket;
-public:
     explicit Server(QObject *parent = nullptr);
     void packPacket(QByteArray &data, Packet packet);
     void unpackPacket(QByteArray data, Packet &packet);
