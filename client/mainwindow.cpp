@@ -52,7 +52,7 @@ void MainWindow::signin(Packet recPacket) {
         user.signinUser();
         ui->stackedWidget->setCurrentIndex(2);
     } else if(recPacket.signalType == -2) {
-        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("登陆失败：用户名与密码不匹配"));
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("登陆失败：用户名与密码不匹配或该账号重复登陆"));
         user.signoutUser();
     }
 }
@@ -74,6 +74,8 @@ void MainWindow::updateWordList(Packet recPacket) {
     if(recPacket.signalType == 1) {
         ui->wordList->addItem(QString::fromStdString(recPacket.word));
         ui->makerWordEdit->clear();
+        user.mark++;
+        user.xp += recPacket.length;
     } else if(recPacket.signalType == -1) {
         QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("单词已存在"));
         ui->makerWordEdit->clear();
@@ -81,6 +83,8 @@ void MainWindow::updateWordList(Packet recPacket) {
 }
 
 void MainWindow::showWord(Packet recPacket) {
+    ui->breakerWordEdit->setEnabled(false);
+    ui->timerBar->setValue(5);
     static unsigned short retryTime = 0;
     if(recPacket.signalType == 2) {
         if(game.wordList.contains(QString::fromStdString(recPacket.word))) {
@@ -94,8 +98,6 @@ void MainWindow::showWord(Packet recPacket) {
         } else {
             game.wordList.append(QString::fromStdString(recPacket.word));
             ui->wordLabel->setText(QString::fromStdString(recPacket.word));
-            ui->breakerWordEdit->setEnabled(false);
-            ui->timerBar->setValue(countDown);
             hideTimer->start(1500);
         }
     } else if(recPacket.signalType == -2) {
@@ -221,10 +223,11 @@ void MainWindow::on_rankButton_clicked() {
 /*游戏界面*/
 void MainWindow::on_startButton_clicked() {
     if(user.userType == 1) {
-        ui->stackedWidget->setCurrentIndex(4);
+        countDown = 5;
         game.difficulty = 2;
         game.wordList.clear();
         game.getWord(game.difficulty);
+        ui->stackedWidget->setCurrentIndex(4);
     } else if(user.userType == 0)
         ui->stackedWidget->setCurrentIndex(3);
 
@@ -246,12 +249,16 @@ void MainWindow::on_breakerWordEdit_returnPressed() {
         outTimer->stop();
         countDown = 5;
         game.getWord(game.difficulty);
+        user.mark++;
+        user.xp += game.wordList.last().length();
+        user.level++;
     }
     ui->breakerWordEdit->clear();
 }
 
 void MainWindow::on_breakerEndButton_clicked() {
-    ui->stackedWidget->setCurrentIndex(2);
+    user.updateUser();
+    user.signinUser();
     outTimer->stop();
-    countDown = 5;
+    ui->stackedWidget->setCurrentIndex(2);
 }

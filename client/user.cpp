@@ -92,8 +92,33 @@ void User::signinUser() {
     send(data);
 }
 
+
+void User::updateUser() {
+    QByteArray data;
+    Packet user;
+    user.signalType = 4;
+    user.userType = userType;
+    strcpy(user.username, username.toStdString().c_str());
+    strcpy(user.password, password.toStdString().c_str());
+    user.mark = mark;
+    user.xp = xp;
+    user.level = level;
+    packPacket(data, user);
+    send(data);
+}
+
 void User::signoutUser() {
+    QByteArray data;
+    Packet user;
+    user.signalType = 5;
+    user.userType = userType;
+    strcpy(user.username, username.toStdString().c_str());
+    packPacket(data, user);
+    send(data);
     userType = -1;
     username = "";
     password = "";
+    xp = 0;
+    mark = 0;
+    level = 0;
 }

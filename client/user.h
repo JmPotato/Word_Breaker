@@ -27,6 +27,7 @@ public:
     explicit User(QObject *parent = nullptr);
     void checkUser();
     void insertUser();
+    void updateUser();
     void signinUser();
     void signoutUser();
     short send(const QByteArray data);

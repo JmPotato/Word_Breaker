@@ -19,11 +19,11 @@ void Game::processPendingDatagram() {
         unpackPacket(datagram, recPacket);
         cout << client_address.toString().toStdString() << ":" << client_port << endl;
         switch(recPacket.signalType) {
-            case 1:
+            case UPDATE_WORD_REQUEST:
                 cout << "UPDATE WORD REQUEST" << endl;
                 emit updateWordSignal(client_address, client_port, recPacket);
                 break;
-            case 2:
+            case GET_WROD_REQUEST:
                 cout << "GET WORD REQUEST" << endl;
                 emit getWordSignal(client_address, client_port, recPacket);
                 break;
@@ -56,7 +56,7 @@ void Game::updateWord(QHostAddress remote, unsigned short port, Packet recPacket
 }
 
 void Game::getWord(QHostAddress remote, unsigned short port, Packet recPacket) {
-    QString sql = QString("SELECT word FROM word_table WHERE length=\"%1\";").arg(recPacket.length);
+    QString sql = QString("SELECT word FROM word_table WHERE length=%1 order by random() limit 1;").arg(recPacket.length);
     QSqlQuery sqlQuery = database.execute(sql);
     QByteArray datagram;
     Packet traPacket;

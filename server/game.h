@@ -8,6 +8,9 @@
 #include <QHostAddress>
 #include <QSqlQueryModel>
 
+#define UPDATE_WORD_REQUEST 1
+#define GET_WROD_REQUEST    2
+
 class Game: public Server {
     Q_OBJECT
 public:
