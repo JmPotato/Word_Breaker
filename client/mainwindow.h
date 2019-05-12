@@ -5,6 +5,9 @@
 #include "game.h"
 #include "rankwindow.h"
 
+#include <unistd.h>
+
+#include <QTimer>
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -23,6 +26,8 @@ private slots:
     void signin(Packet recPacket);
     void getInfo(Packet recPacket);
     void showWord(Packet recPacket);
+    void hideWord();
+    void outWord();
     void updateWordList(Packet recPacket);
     void on_signupButton_clicked();
     void on_signinButton_clicked();
@@ -32,12 +37,17 @@ private slots:
     void on_findButton_clicked();
     void on_rankButton_clicked();
     void on_startButton_clicked();
-    void on_submitButton_clicked();
     void on_makerWordEdit_returnPressed();
     void on_signinPassword_returnPressed();
     void on_signupRepassword_returnPressed();
     void on_makerEndButton_clicked();
+    void on_breakerWordEdit_returnPressed();
+    void on_breakerEndButton_clicked();
+
 private:
+    QTimer *hideTimer = new QTimer(this);
+    QTimer *outTimer = new QTimer(this);
+    unsigned short countDown = 5;
     Ui::MainWindow *ui;
     RankWindow *rank;
     User user;

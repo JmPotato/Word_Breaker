@@ -7,15 +7,23 @@
 
 #include <QHostAddress>
 
+#define CREAT_USER_RESPONSE   1
+#define CHECK_USER_RESPONSE   2
+#define GET_USER_RESPONSE     3
+#define UPGRADE_USER_RESPONSE 4
+
 using namespace std;
 
 class User: public Client {
     Q_OBJECT
 public:
-    short status;
     short userType;
     QString username;
     QString password;
+    unsigned short mark;
+    unsigned short xp;
+    unsigned short level;
+
     explicit User(QObject *parent = nullptr);
     void checkUser();
     void insertUser();

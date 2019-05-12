@@ -3,6 +3,9 @@
 Game::Game(QObject *parent): Client(parent) {
     socket = new QUdpSocket(this);
     socket->bind(clientAddress, clientPort+1);
+
+    difficulty = 2;
+
     connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
@@ -24,13 +27,13 @@ void Game::processPendingDatagram() {
         unpackPacket(datagram, recPacket);
         cout << recPacket.signalType << endl;
         switch(recPacket.signalType) {
-            case 1:
-            case -1:
+            case UPDATE_WORD_RESPONSE:
+            case -UPDATE_WORD_RESPONSE:
                 cout << "UPDATE WORD RESPONSE" << endl;
                 emit updateWordSignal(recPacket);
                 break;
-            case 2:
-            case -2:
+            case GET_WROD_RESPONSE:
+            case -GET_WROD_RESPONSE:
                 cout << "GET WORD RESPONSE" << endl;
                 emit getWordSignal(recPacket);
                 break;

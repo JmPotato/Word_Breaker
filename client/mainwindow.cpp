@@ -7,14 +7,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(1);
     ui->signinBreakerButton->toggle();
     ui->signupBreakerButton->toggle();
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->message->setAlignment(Qt::AlignCenter);
+    ui->signinPassword->setEchoMode(QLineEdit::Password);
     ui->signupPassword->setEchoMode(QLineEdit::Password);
     ui->signupRepassword->setEchoMode(QLineEdit::Password);
-    ui->signinPassword->setEchoMode(QLineEdit::Password);
-    ui->message->setAlignment(Qt::AlignCenter);
+    ui->signinUsername->setFocus();
+    ui->signupUsername->setFocus();
+    ui->timerBar->setRange(0, 5);
+    ui->timerBar->setValue(5);
 
+    connect(hideTimer, SIGNAL(timeout()), this, SLOT(hideWord()));
+    connect(outTimer, SIGNAL(timeout()), this, SLOT(outWord()));
     connect(&user, &User::signupSignal, this, &MainWindow::signup);
     connect(&user, &User::signinSignal, this, &MainWindow::signin);
     connect(&user, &User::getInfoSignal, this, &MainWindow::getInfo);
@@ -26,6 +32,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+/*登陆功能响应模块*/
 void MainWindow::signup(Packet recPacket) {
     if(recPacket.signalType == 1) {
         ui->signupUsername->clear();
@@ -52,13 +59,17 @@ void MainWindow::signin(Packet recPacket) {
 
 void MainWindow::getInfo(Packet recPacket) {
     if(recPacket.signalType == 3) {
-        ui->message->setText(QString("Username: %1 Mark: %2 Xp: %3 Level: %4").arg(recPacket.username).arg(recPacket.mark).arg(recPacket.xp).arg(recPacket.level));
+        user.mark = recPacket.mark;
+        user.xp = recPacket.xp;
+        user.level = recPacket.level;
+        ui->message->setText(QString("Username: %1 Mark: %2 Xp: %3 Level: %4").arg(user.username).arg(user.mark).arg(user.xp).arg(user.level));
     } else if(recPacket.signalType == -3) {
         QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("获取用户信息失败"));
         user.signoutUser();
     }
 }
 
+/*游戏功能响应模块*/
 void MainWindow::updateWordList(Packet recPacket) {
     if(recPacket.signalType == 1) {
         ui->wordList->addItem(QString::fromStdString(recPacket.word));
@@ -70,13 +81,45 @@ void MainWindow::updateWordList(Packet recPacket) {
 }
 
 void MainWindow::showWord(Packet recPacket) {
+    static unsigned short retryTime = 0;
     if(recPacket.signalType == 2) {
-        ui->wordBrowser->setText(QString::fromStdString(recPacket.word));
+        if(game.wordList.contains(QString::fromStdString(recPacket.word))) {
+            if(retryTime <= 5)
+                retryTime++;
+            else {
+                game.difficulty++;
+                retryTime = 0;
+            }
+            game.getWord(game.difficulty);
+        } else {
+            game.wordList.append(QString::fromStdString(recPacket.word));
+            ui->wordLabel->setText(QString::fromStdString(recPacket.word));
+            ui->breakerWordEdit->setEnabled(false);
+            ui->timerBar->setValue(countDown);
+            hideTimer->start(1500);
+        }
     } else if(recPacket.signalType == -2) {
-        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("拉取单词失败"));
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("闯关成功"));
     }
 }
 
+void MainWindow::hideWord() {
+    ui->wordLabel->clear();
+    ui->breakerWordEdit->setEnabled(true);
+    outTimer->start(1000);
+}
+
+void MainWindow::outWord() {
+    ui->timerBar->setValue(--countDown);
+    if(countDown == 0) {
+        outTimer->stop();
+        countDown = 5;
+        game.getWord(game.difficulty);
+    }
+}
+
+/*界面逻辑模块*/
+/*登陆注册界面*/
 void MainWindow::on_signupButton_clicked() {
     user.signoutUser();
     QString username = ui->signupUsername->text();
@@ -166,6 +209,7 @@ void MainWindow::on_signoutButton_clicked() {
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+/*主界面*/
 void MainWindow::on_findButton_clicked() {
 }
 
@@ -174,15 +218,16 @@ void MainWindow::on_rankButton_clicked() {
     rank->show();
 }
 
+/*游戏界面*/
 void MainWindow::on_startButton_clicked() {
-    ui->stackedWidget->setCurrentIndex(3);
-}
+    if(user.userType == 1) {
+        ui->stackedWidget->setCurrentIndex(4);
+        game.difficulty = 2;
+        game.wordList.clear();
+        game.getWord(game.difficulty);
+    } else if(user.userType == 0)
+        ui->stackedWidget->setCurrentIndex(3);
 
-void MainWindow::on_submitButton_clicked() {
-    if(!QString::compare(ui->makerWordEdit->text(), ""))
-        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("单词不能为空"));
-    else
-        game.updateWord(ui->makerWordEdit->text().toStdString());
 }
 
 void MainWindow::on_makerWordEdit_returnPressed() {
@@ -194,4 +239,19 @@ void MainWindow::on_makerWordEdit_returnPressed() {
 
 void MainWindow::on_makerEndButton_clicked() {
     ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::on_breakerWordEdit_returnPressed() {
+    if(ui->breakerWordEdit->text() == game.wordList.last()) {
+        outTimer->stop();
+        countDown = 5;
+        game.getWord(game.difficulty);
+    }
+    ui->breakerWordEdit->clear();
+}
+
+void MainWindow::on_breakerEndButton_clicked() {
+    ui->stackedWidget->setCurrentIndex(2);
+    outTimer->stop();
+    countDown = 5;
 }

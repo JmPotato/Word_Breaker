@@ -3,11 +3,15 @@
 User::User(QObject *parent): Client(parent) {
     socket = new QUdpSocket(this);
     socket->bind(clientAddress, clientPort);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
-    status = 0;
+
     userType = -1;
     username = "";
     password = "";
+    mark = 0;
+    xp = 0;
+    level = 0;
+
+    connect(socket, SIGNAL(readyRead()), this, SLOT(processPendingDatagram()));
 }
 
 short User::send(const QByteArray data) {
@@ -28,19 +32,24 @@ void User::processPendingDatagram() {
         unpackPacket(datagram, recPacket);
         cout << recPacket.signalType << endl;
         switch(recPacket.signalType) {
-            case 1:
-            case -1:
+            case CREAT_USER_RESPONSE:
+            case -CREAT_USER_RESPONSE:
                 cout << "CREAT USER RESPONSE" << endl;
                 emit signupSignal(recPacket);
                 break;
-            case 2:
-            case -2:
+            case CHECK_USER_RESPONSE:
+            case -CHECK_USER_RESPONSE:
                 cout << "CHECK USER RESPONSE" << endl;
                 emit signinSignal(recPacket);
                 break;
-            case 3:
-            case -3:
+            case GET_USER_RESPONSE:
+            case -GET_USER_RESPONSE:
                 cout << "GET USER RESPONSE" << endl;
+                emit getInfoSignal(recPacket);
+                break;
+            case UPGRADE_USER_RESPONSE:
+            case -UPGRADE_USER_RESPONSE:
+                cout << "UPGRADE USER RESPONSE" << endl;
                 emit getInfoSignal(recPacket);
                 break;
             default:
@@ -84,7 +93,6 @@ void User::signinUser() {
 }
 
 void User::signoutUser() {
-    status = 0;
     userType = -1;
     username = "";
     password = "";
