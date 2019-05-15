@@ -13,8 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->signinPassword->setEchoMode(QLineEdit::Password);
     ui->signupPassword->setEchoMode(QLineEdit::Password);
     ui->signupRepassword->setEchoMode(QLineEdit::Password);
-    ui->signinUsername->setFocus();
-    ui->signupUsername->setFocus();
     ui->message->setAlignment(Qt::AlignCenter);
 
     ui->timerBar->setRange(0, game.currentTimeLimted);
@@ -23,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->rankTable->setRowCount(10);
     ui->rankTable->setColumnCount(4);
     ui->rankTable->setHorizontalHeaderLabels({"用户名","单词数","经验值","闯关数"});
+
+    ui->signupUsername->setFocus();
+    ui->signinUsername->setFocus();
 
     ui->stackedWidget->setCurrentIndex(1);
 
@@ -98,6 +99,7 @@ void MainWindow::updateWordList(Packet recPacket) {
 
 void MainWindow::showWord(Packet recPacket) {
     ui->breakerWordEdit->setEnabled(false);
+    ui->timerBar->setRange(0, game.currentTimeLimted);
     ui->timerBar->setValue(game.currentTimeLimted);
     static unsigned short retryTime = 0;
     if(recPacket.signalType == 2) {
@@ -116,7 +118,7 @@ void MainWindow::showWord(Packet recPacket) {
             hideTimer->start(1500);
         }
     } else if(recPacket.signalType == -2) {
-        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("闯关成功"));
+        QMessageBox::information(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("恭喜您完成本次闯关"));
     }
 }
 
@@ -309,9 +311,11 @@ void MainWindow::on_breakerWordEdit_returnPressed() {
         hideTimer->stop();
         outTimer->stop();
         countDown = game.currentTimeLimted;
-        game.getWord(game.difficulty);
         user.mark++;
         user.xp += game.wordList.last().length();
+        if(game.wordList.count() / 5 != 0 && game.wordList.count() % 5 == 0)
+            game.difficulty++;
+        game.getWord(game.difficulty);
         if(game.currentLevel > user.level)
             user.level = game.currentLevel;
     }
@@ -319,6 +323,7 @@ void MainWindow::on_breakerWordEdit_returnPressed() {
 }
 
 void MainWindow::on_breakerEndButton_clicked() {
+    ui->breakerWordEdit->clear();
     user.updateUser();
     user.signinUser();
     hideTimer->stop();

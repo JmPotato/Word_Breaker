@@ -22,13 +22,33 @@
       </property>
       <widget class="QWidget" name="signup">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="signupRepasswordLabel">
           <property name="text">
            <string>重复密码</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="signupTypeLabel">
+          <property name="text">
+           <string>账号类型</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QLineEdit" name="signupUsername"/>
+        </item>
+        <item row="9" column="0" colspan="3">
+         <widget class="QPushButton" name="gosigninButton">
+          <property name="text">
+           <string>已有账号？去登陆</string>
           </property>
          </widget>
         </item>
@@ -42,13 +62,23 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="signupTypeLabel">
-          <property name="text">
-           <string>账号类型</string>
+        <item row="5" column="2">
+         <widget class="QRadioButton" name="signupMakerButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
+          <property name="text">
+           <string>出题者</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QRadioButton" name="signupBreakerButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string>闯关者</string>
           </property>
          </widget>
         </item>
@@ -62,48 +92,18 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QRadioButton" name="signupBreakerButton">
-          <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
-          </property>
-          <property name="text">
-           <string>闯关者</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="2">
-         <widget class="QRadioButton" name="signupMakerButton">
-          <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
-          </property>
-          <property name="text">
-           <string>出题者</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QLineEdit" name="signupRepassword"/>
-        </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QLineEdit" name="signupPassword"/>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QLineEdit" name="signupUsername"/>
-        </item>
-        <item row="7" column="0" colspan="3">
+        <item row="8" column="0" colspan="3">
          <widget class="QPushButton" name="signupButton">
           <property name="text">
            <string>注册</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="0" colspan="3">
-         <widget class="QPushButton" name="gosigninButton">
-          <property name="text">
-           <string>已有账号？去登陆</string>
-          </property>
-         </widget>
+        <item row="1" column="1" colspan="2">
+         <widget class="QLineEdit" name="signupPassword"/>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QLineEdit" name="signupRepassword"/>
         </item>
        </layout>
       </widget>
@@ -302,28 +302,13 @@
       </widget>
       <widget class="QWidget" name="rank">
        <layout class="QGridLayout" name="gridLayout_6">
-        <item row="1" column="0">
+        <item row="0" column="0">
          <widget class="QTableWidget" name="rankTable"/>
         </item>
-        <item row="2" column="0">
+        <item row="1" column="0">
          <widget class="QPushButton" name="backButton">
           <property name="text">
            <string>返回</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="rankLabel">
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Top 10</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -331,62 +316,7 @@
       </widget>
       <widget class="QWidget" name="search">
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="1" column="1" colspan="2">
-         <widget class="QLineEdit" name="searchEdit"/>
-        </item>
-        <item row="0" column="1" colspan="3">
-         <widget class="QLabel" name="titleLabel">
-          <property name="font">
-           <font>
-            <pointsize>20</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>玩家查询</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1" colspan="2">
-         <widget class="QLabel" name="usernameResultLabel">
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>用户名：</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1" colspan="2">
-         <widget class="QLabel" name="markResultLabel">
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>单词数：</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3">
-         <widget class="QPushButton" name="searchButton">
-          <property name="text">
-           <string>查询</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1" colspan="2">
+        <item row="9" column="1">
          <widget class="QLabel" name="levelResultLabel">
           <property name="font">
            <font>
@@ -401,21 +331,60 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="3">
-         <widget class="QLabel" name="usernameResult">
+        <item row="0" column="1" colspan="3">
+         <widget class="QLineEdit" name="searchEdit"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="markResultLabel">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>单词数：</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QRadioButton" name="breakerRadio">
+          <property name="text">
+           <string>闯关者</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2" colspan="2">
+         <widget class="QLabel" name="xpResult">
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item row="5" column="3">
+        <item row="10" column="1" colspan="3">
+         <widget class="QPushButton" name="searchBackButton">
+          <property name="text">
+           <string>返回</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2" colspan="2">
          <widget class="QLabel" name="markResult">
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item row="6" column="1" colspan="2">
+        <item row="6" column="2" colspan="2">
+         <widget class="QLabel" name="usernameResult">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
          <widget class="QLabel" name="xpResultLabel">
           <property name="font">
            <font>
@@ -430,42 +399,21 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="3">
+        <item row="1" column="1" colspan="3">
+         <widget class="QPushButton" name="searchButton">
+          <property name="text">
+           <string>查询</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="2" colspan="2">
          <widget class="QLabel" name="levelResult">
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item row="2" column="3">
-         <widget class="QRadioButton" name="makerRadio">
-          <property name="text">
-           <string>出题者</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="3">
-         <widget class="QLabel" name="xpResult">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1" colspan="3">
-         <widget class="QPushButton" name="searchBackButton">
-          <property name="text">
-           <string>返回</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QRadioButton" name="breakerRadio">
-          <property name="text">
-           <string>闯关者</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QLabel" name="label">
           <property name="font">
            <font>
@@ -473,9 +421,47 @@
            </font>
           </property>
           <property name="text">
-           <string>用户类型：</string>
+           <string>用户类：</string>
           </property>
          </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="usernameResultLabel">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>用户名：</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QRadioButton" name="makerRadio">
+          <property name="text">
+           <string>出题者</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="3">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>15</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
