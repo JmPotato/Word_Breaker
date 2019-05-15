@@ -145,10 +145,18 @@ void MainWindow::outWord() {
 void MainWindow::updateRank(Packet recPacket) {
     static int number = 0;
     if(recPacket.signalType == 1) {
-        ui->rankTable->setItem(number, 0,new QTableWidgetItem(QString(recPacket.username)));
-        ui->rankTable->setItem(number, 1,new QTableWidgetItem(QString::number(recPacket.mark)));
-        ui->rankTable->setItem(number, 2,new QTableWidgetItem(QString::number(recPacket.xp)));
-        ui->rankTable->setItem(number, 3,new QTableWidgetItem(QString::number(recPacket.level)));
+        QTableWidgetItem *itemUsername = new QTableWidgetItem;
+        itemUsername->setData(Qt::DisplayRole, QString(recPacket.username));
+        ui->rankTable->setItem(number, 0, itemUsername);
+        QTableWidgetItem *itemMark = new QTableWidgetItem;
+        itemMark->setData(Qt::DisplayRole, recPacket.mark);
+        ui->rankTable->setItem(number, 1, itemMark);
+        QTableWidgetItem *itemXp = new QTableWidgetItem;
+        itemXp->setData(Qt::DisplayRole, recPacket.xp);
+        ui->rankTable->setItem(number, 2, itemXp);
+        QTableWidgetItem *itemLevel = new QTableWidgetItem;
+        itemLevel->setData(Qt::DisplayRole, recPacket.level);
+        ui->rankTable->setItem(number, 3, itemLevel);
         number++;
     } else if(recPacket.signalType == -1) {
         number = 0;

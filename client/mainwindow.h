@@ -9,6 +9,7 @@
 
 #include <QTimer>
 #include <QLineEdit>
+#include <QVariant>
 #include <QMainWindow>
 #include <QMessageBox>
 
