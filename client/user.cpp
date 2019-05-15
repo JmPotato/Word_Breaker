@@ -52,6 +52,11 @@ void User::processPendingDatagram() {
                 cout << "UPGRADE USER RESPONSE" << endl;
                 emit getInfoSignal(recPacket);
                 break;
+            case SEARCH_USER_RESPONSE:
+            case -SEARCH_USER_RESPONSE:
+                cout << "SEARCH USER RESPONSE" << endl;
+                emit getResultSignal(recPacket);
+                break;
             default:
                 cout << "FAILED RESPONSE" << endl;
                 break;
@@ -121,4 +126,14 @@ void User::signoutUser() {
     xp = 0;
     mark = 0;
     level = 0;
+}
+
+void User::searchUser(QString name, short type) {
+    QByteArray data;
+    Packet user;
+    user.signalType = 6;
+    user.userType = type;
+    strcpy(user.username, name.toStdString().c_str());
+    packPacket(data, user);
+    send(data);
 }

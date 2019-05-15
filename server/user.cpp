@@ -9,6 +9,7 @@ User::User(QObject *parent): Server(parent) {
     connect(this, &User::signinSignal, this, &User::validateUser);
     connect(this, &User::logoutSignal, this, &User::logoutUser);
     connect(this, &User::userInfoSignal, this, &User::getUserInfo);
+    connect(this, &User::searchUserSignal, this, &User::searchUserInfo);
 }
 
 void User::processPendingDatagram() {
@@ -41,6 +42,10 @@ void User::processPendingDatagram() {
             case LOGOUT_USER_REQUEST:
                 cout << "LOGOUT USER REQUEST" << endl;
                 emit logoutSignal(recPacket);
+                break;
+            case SEARCH_USER_REQUEST:
+                cout << "SEARCH USER REQUEST" << endl;
+                emit searchUserSignal(client_address, client_port, recPacket);
                 break;
             default:
                 cout << "NONE REQUEST" << endl;
@@ -155,6 +160,30 @@ void User::logoutUser(Packet recPacket) {
             makerOnline.removeAt(makerOnline.indexOf(recPacket.username));
         }
     }
+}
+
+void User::searchUserInfo(QHostAddress remote, unsigned short port, Packet recPacket) {
+    QString user_type;
+    if(recPacket.userType == 0)
+        user_type = "maker";
+    else if(recPacket.userType == 1)
+        user_type = "breaker";
+    QString sql = QString("SELECT mark, xp, level FROM %1 WHERE username=\"%2\";").arg(user_type).arg(QString::fromStdString(recPacket.username));
+    QSqlQuery sqlQuery = database.execute(sql);
+    QByteArray datagram;
+    Packet traPacket;
+    traPacket.signalType = -6;
+    if(sqlQuery.first()) {
+        traPacket.mark = sqlQuery.value("mark").toInt();
+        traPacket.xp = sqlQuery.value("xp").toInt();
+        traPacket.level = sqlQuery.value("level").toInt();
+        traPacket.signalType = 6;
+    }
+    traPacket.userType = recPacket.userType;
+    strcpy(traPacket.username, recPacket.username);
+    strcpy(traPacket.password, recPacket.password);
+    packPacket(datagram, traPacket);
+    send(datagram, remote, port);
 }
 
 //void User::getRank(QHostAddress remote, unsigned short port) {

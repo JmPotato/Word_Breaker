@@ -61,3 +61,10 @@ void Game::getWord(unsigned short wordLength) {
     packPacket(data, word);
     send(data);
 }
+
+void Game::endGame() {
+    difficulty = 2;
+    currentLevel = 1;
+    currentTimeLimted = 5;
+    wordList.clear();
+}

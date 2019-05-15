@@ -11,6 +11,8 @@
 #define CHECK_USER_RESPONSE   2
 #define GET_USER_RESPONSE     3
 #define UPGRADE_USER_RESPONSE 4
+#define LOGOUT_USER_RESPONSE  5
+#define SEARCH_USER_RESPONSE  6
 
 using namespace std;
 
@@ -28,6 +30,7 @@ public:
     void checkUser();
     void insertUser();
     void updateUser();
+    void searchUser(QString name, short type);
     void signinUser();
     void signoutUser();
     short send(const QByteArray data);
@@ -35,6 +38,7 @@ signals:
     void signupSignal(Packet recPacket);
     void signinSignal(Packet recPacket);
     void getInfoSignal(Packet recPacket);
+    void getResultSignal(Packet recPacket);
 private slots:
     void processPendingDatagram();
 };

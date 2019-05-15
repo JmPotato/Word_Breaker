@@ -30,22 +30,19 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     client.cpp \
+    rank.cpp \
     user.cpp \
-    rankwindow.cpp \
-    game.cpp \
-    gadget.cpp
+    game.cpp
 
 HEADERS += \
         mainwindow.h \
     client.h \
+    rank.h \
     user.h \
-    rankwindow.h \
-    game.h \
-    gadget.h
+    game.h
 
 FORMS += \
-        mainwindow.ui \
-    rankwindow.ui
+        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

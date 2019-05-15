@@ -51,6 +51,7 @@ void Game::updateWord(QHostAddress remote, unsigned short port, Packet recPacket
         }
     }
     strcpy(traPacket.word, recPacket.word);
+    traPacket.length = recPacket.length;
     packPacket(datagram, traPacket);
     send(datagram, remote, port);
 }

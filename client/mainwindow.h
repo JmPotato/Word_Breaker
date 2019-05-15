@@ -3,7 +3,7 @@
 
 #include "user.h"
 #include "game.h"
-#include "rankwindow.h"
+#include "rank.h"
 
 #include <unistd.h>
 
@@ -29,6 +29,8 @@ private slots:
     void hideWord();
     void outWord();
     void updateWordList(Packet recPacket);
+    void updateRank(Packet recPacket);
+    void searchInfo(Packet recPacket);
     void on_signupButton_clicked();
     void on_signinButton_clicked();
     void on_gosigninButton_clicked();
@@ -44,14 +46,23 @@ private slots:
     void on_breakerWordEdit_returnPressed();
     void on_breakerEndButton_clicked();
 
+    void on_backButton_clicked();
+
+    void on_searchButton_clicked();
+
+    void on_searchBackButton_clicked();
+
 private:
-    QTimer *hideTimer = new QTimer(this);
-    QTimer *outTimer = new QTimer(this);
-    unsigned short countDown = 5;
     Ui::MainWindow *ui;
-    RankWindow *rank;
+
     User user;
     Game game;
+    Rank rank;
+
+    unsigned short countDown = 5;
+    QTimer *hideTimer = new QTimer(this);
+    QTimer *outTimer = new QTimer(this);
+
 };
 
 #endif // MAINWINDOW_H

@@ -19,6 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     database.cpp \
+    rank.cpp \
     server.cpp \
     user.cpp \
     game.cpp
@@ -30,6 +31,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     database.h \
+    rank.h \
     server.h \
     user.h \
     game.h

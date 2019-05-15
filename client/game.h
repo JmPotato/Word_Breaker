@@ -15,9 +15,13 @@ class Game: public Client {
 public:
     QStringList wordList;
     unsigned short difficulty;
+    unsigned short currentLevel = 1;
+    unsigned short currentTimeLimted = 5;
+
     explicit Game(QObject *parent = nullptr);
     void getWord(unsigned short wordLength);
     void updateWord(string _word);
+    void endGame();
     short send(const QByteArray data);
 signals:
     void getWordSignal(Packet recPacket);
