@@ -16,12 +16,12 @@ class Game: public Server {
 public:
     explicit Game(QObject *parent = nullptr);
 signals:
-    void getWordSignal(QHostAddress remote, unsigned short port, Packet recPacket);
-    void updateWordSignal(QHostAddress remote, unsigned short port, Packet recPacket);
+    void getWordSignal(QHostAddress remote, unsigned short port, Packet recPacket);     //拉取单词请求信号
+    void updateWordSignal(QHostAddress remote, unsigned short port, Packet recPacket);  //更新单词请求信号
 private slots:
-    void processPendingDatagram();
-    void getWord(QHostAddress remote, unsigned short port, Packet recPacket);
-    void updateWord(QHostAddress remote, unsigned short port, Packet recPacket);
+    void processPendingDatagram();      //数据帧处理槽函数
+    void getWord(QHostAddress remote, unsigned short port, Packet recPacket);   //拉取单词槽函数
+    void updateWord(QHostAddress remote, unsigned short port, Packet recPacket);    //更新单词槽函数
 };
 
 #endif // GAME_H

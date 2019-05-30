@@ -24,20 +24,20 @@ private:
 public:
     explicit User(QObject *parent = nullptr);
 signals:
-    void updateSignal(Packet recPacket);
-    void signupSignal(QHostAddress remote, unsigned short port, Packet recPacket);
-    void signinSignal(QHostAddress remote, unsigned short port, Packet recPacket);
-    void logoutSignal(Packet recPacket);
-    void userInfoSignal(QHostAddress remote, unsigned short port, Packet recPacket);
-    void searchUserSignal(QHostAddress remote, unsigned short port, Packet recPacket);
+    void updateSignal(Packet recPacket);    //更新用户信息请求信号
+    void signupSignal(QHostAddress remote, unsigned short port, Packet recPacket);  //注册请求信号
+    void signinSignal(QHostAddress remote, unsigned short port, Packet recPacket);  //登陆请求信号
+    void logoutSignal(Packet recPacket);    //登出请求信号
+    void userInfoSignal(QHostAddress remote, unsigned short port, Packet recPacket);    //拉取用户信息请求信号
+    void searchUserSignal(QHostAddress remote, unsigned short port, Packet recPacket);  //搜索用户请求信号
 private slots:
-    void processPendingDatagram();
-    void updateUser(Packet recPacket);
-    void logoutUser(Packet recPacket);
-    void creatUser(QHostAddress remote, unsigned short port, Packet recPacket);
-    void validateUser(QHostAddress remote, unsigned short port, Packet recPacket);
-    void getUserInfo(QHostAddress remote, unsigned short port, Packet recPacket);
-    void searchUserInfo(QHostAddress remote, unsigned short port, Packet recPacket);
+    void processPendingDatagram();  //数据帧处理槽函数
+    void updateUser(Packet recPacket);  //更新用户槽函数
+    void logoutUser(Packet recPacket);  //登出用户槽函数
+    void creatUser(QHostAddress remote, unsigned short port, Packet recPacket); //创建用户槽函数
+    void validateUser(QHostAddress remote, unsigned short port, Packet recPacket);  //验证用户槽函数
+    void getUserInfo(QHostAddress remote, unsigned short port, Packet recPacket);   //获取用户信息槽函数
+    void searchUserInfo(QHostAddress remote, unsigned short port, Packet recPacket);    //搜索用户信息槽函数
 };
 
 #endif // USER_H

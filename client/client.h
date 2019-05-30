@@ -18,15 +18,15 @@ using namespace std;
 
 #pragma pack(1)
 typedef struct {
-    short signalType;
-    short userType;
-    unsigned short mark;
-    unsigned short xp;
-    unsigned short level;
-    unsigned short length;
-    char username[10];
-    char password[15];
-    char word[20];
+    short signalType;       //信号类型，用于判断本次传输要进行的操作
+    short userType;         //用户类型
+    unsigned short mark;    //单词数
+    unsigned short xp;      //经验值
+    unsigned short level;   //闯关数
+    unsigned short length;  //单词长度
+    char username[10];      //用户名
+    char password[15];      //用户密码
+    char word[20];          //单词
 } Packet;
 #pragma pack()
 

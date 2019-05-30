@@ -13,14 +13,14 @@
 using namespace std;
 
 class Database {
-    QSqlDatabase database;
+    QSqlDatabase database;      //数据库对象
 public:
-    Database();
-    ~Database();
-    void connect();
-    void close();
-    QSqlQuery execute(QString sqlCommand);
-    void initDatabase();
+    Database();                 //构造函数
+    ~Database();                //析构函数
+    void connect();             //连接数据库
+    void close();               //关闭数据库
+    QSqlQuery execute(QString sqlCommand);      //执行 sql 语句
+    void initDatabase();        //创建数据库
 };
 
 #endif // DATABASE_H

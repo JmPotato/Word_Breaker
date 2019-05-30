@@ -16,10 +16,10 @@ class Rank: public Server {
 public:
     explicit Rank(QObject *parent = nullptr);
 signals:
-    void getUserSignal(QHostAddress remote, unsigned short port, Packet recPacket);
+    void getUserSignal(QHostAddress remote, unsigned short port, Packet recPacket);     //排行榜数据请求信号
 private slots:
-    void processPendingDatagram();
-    void getUserByRank(QHostAddress remote, unsigned short port, Packet recPacket);
+    void processPendingDatagram();      //数据帧处理槽函数
+    void getUserByRank(QHostAddress remote, unsigned short port, Packet recPacket);     //排行榜数据拉取槽函数
 };
 
 #endif // RANK_H
